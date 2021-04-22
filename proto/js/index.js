@@ -1,6 +1,8 @@
 const MAIN_MOUSE_BUTTON = 0;
 
-let mode = "touch"
+let mode = "pen"
+
+let sakura = new Sakura('body', {delay: 1000})
 
 let lb_pressure = document.getElementById("lb_pressure")
 let lb_btype = document.getElementById("lb_btype")
@@ -47,11 +49,22 @@ function prepareContext() {
   return context;
 }
 
-function setLineProperties(context) {
+function setLineProperties(context, draw=true, pressure) {
   context.strokeStyle = "#1D1D1B";
-  context.lineWidth = 3;
   // context.lineJoin = "round";
+
+  if(draw) {
+    //context.lineWidth = 3;
+    context.lineWidth = 10 * pressure;
+    context.globalCompositeOperation = 'source-over';
+  } else {
+    context.lineWidth = 30;
+    context.globalCompositeOperation = 'destination-out';
+  }
+
+  context.lineJoin = "round";
   context.lineCap = "round";
+
   return context;
 }
 
@@ -70,7 +83,8 @@ function start(event) {
   lb_btype.innerHTML = `buttonType: ${event.button}`
 
   shouldDraw = true;
-  setLineProperties(theContext);
+
+  setLineProperties(theContext, event.button == 0, event.pressure);
 
   theContext.beginPath();
 
