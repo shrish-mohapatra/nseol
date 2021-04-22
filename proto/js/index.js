@@ -49,13 +49,12 @@ function prepareContext() {
   return context;
 }
 
-function setLineProperties(context, draw=true, pressure) {
+function setLineProperties(context, draw=true) {
   context.strokeStyle = "#1D1D1B";
   // context.lineJoin = "round";
 
   if(draw) {
-    //context.lineWidth = 3;
-    context.lineWidth = 10 * pressure;
+    context.lineWidth = 3;
     context.globalCompositeOperation = 'source-over';
   } else {
     context.lineWidth = 30;
@@ -84,7 +83,7 @@ function start(event) {
 
   shouldDraw = true;
 
-  setLineProperties(theContext, event.button == 0, event.pressure);
+  setLineProperties(theContext, event.button == 0);
 
   theContext.beginPath();
 
