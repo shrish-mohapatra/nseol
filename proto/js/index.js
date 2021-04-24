@@ -20,6 +20,7 @@
 
   var drawing = false;
   let inputMode = "pen"
+  let drawMode = "draw"
 
   canvas.addEventListener('pointerdown', onMouseDown, false);
   canvas.addEventListener('pointerup', onMouseUp, false);
@@ -50,12 +51,22 @@
   onResize();
 
 
-  function drawLine(x0, y0, x1, y1, color, emit){
+  function drawLine(x0, y0, x1, y1, color, emit, erase){
     context.beginPath();
     context.moveTo(x0, y0);
     context.lineTo(x1, y1);
     context.strokeStyle = color;
-    context.lineWidth = 2;
+
+    if(erase) {
+      context.globalCompositeOperation = "destination-out"
+      context.lineWidth = 30;  
+    } else {
+      context.globalCompositeOperation = "source-over"
+      context.lineWidth = 2; 
+    }
+
+    context.lineJoin = "round";
+    context.lineCap = "round";
 
     context.stroke();
     context.closePath();
@@ -69,7 +80,8 @@
       y0: y0 / h,
       x1: x1 / w,
       y1: y1 / h,
-      color: color
+      color: color,
+      erase: erase
     });
   }
 
@@ -79,7 +91,9 @@
 
   function onMouseDown(e){
     if (checkInput(e)) return
+
     lb_btype.innerHTML = `buttonType: ${e.button}`
+    drawMode = e.button == 2 ? "erase" : "pen"
 
     drawing = true;
     current.x = e.clientX||e.touches[0].clientX;
@@ -90,7 +104,7 @@
     if (checkInput(e)) return
     if (!drawing) { return; }
     drawing = false;
-    drawLine(current.x, current.y, e.clientX||e.touches[0].clientX, e.clientY||e.touches[0].clientY, current.color, true);
+    drawLine(current.x, current.y, e.clientX||e.touches[0].clientX, e.clientY||e.touches[0].clientY, current.color, true, drawMode == "erase");
   }
 
   function onMouseMove(e){
@@ -99,7 +113,7 @@
 
     lb_pressure.innerHTML = `pressure ${e.pressure}`
 
-    drawLine(current.x, current.y, e.clientX||e.touches[0].clientX, e.clientY||e.touches[0].clientY, current.color, true);
+    drawLine(current.x, current.y, e.clientX||e.touches[0].clientX, e.clientY||e.touches[0].clientY, current.color, true, drawMode == "erase");
     current.x = e.clientX||e.touches[0].clientX;
     current.y = e.clientY||e.touches[0].clientY;
   }
@@ -124,7 +138,7 @@
   function onDrawingEvent(data){
     var w = canvas.width;
     var h = canvas.height;
-    drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color);
+    drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color, false, data.erase);
   }
 
   // make the canvas fill its parent

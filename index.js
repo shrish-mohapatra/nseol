@@ -10,7 +10,9 @@ app.use(express.static(path.join(__dirname, 'proto', 'css')));
 app.use(express.static(path.join(__dirname, 'proto')));
 
 function onConnection(socket){
-  socket.on('drawing', (data) => {socket.broadcast.emit('drawing', data)});
+  socket.on('drawing', (data) => {
+    socket.broadcast.emit('drawing', data)
+  });
 
   socket.on('clearCanvas', () => socket.broadcast.emit('clearCanvas'));
 }
