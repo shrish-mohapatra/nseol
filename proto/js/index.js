@@ -93,7 +93,7 @@
     if (checkInput(e)) return
 
     lb_btype.innerHTML = `buttonType: ${e.button}`
-    drawMode = e.button == 2 ? "erase" : "pen"
+    drawMode = e.button == 0 ? "pen" : "erase"
 
     drawing = true;
     current.x = e.clientX||e.touches[0].clientX;
