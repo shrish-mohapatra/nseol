@@ -13,6 +13,7 @@
 
   let btnMode = document.getElementById("btnMode")
   let btnClear = document.getElementById("btnClear");
+  let btnCopy = document.getElementById("btnCopy");
 
   var current = {
     color: '#1D1D1B'
@@ -42,6 +43,14 @@
       spMode.innerHTML = "touch_app"
       inputMode = "touch"
     }
+  })
+
+  btnCopy.addEventListener("click", (e) => {
+    console.log("copy")
+    canvas.toBlob(blob => {
+      const img = new ClipboardItem({"image/png": blob})
+      navigator.clipboard.write([img])
+    })
   })
 
   socket.on('drawing', onDrawingEvent);
